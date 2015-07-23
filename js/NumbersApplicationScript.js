@@ -3,10 +3,13 @@ var sortedNumbers = [12,132,234,400];
 var letter = ["F", "I", "V", "E"];
 var dropTargetDiv1 = '';
 var dropTargetDiv2 = '';
-dropTargetDiv1 = "<div ondrop = 'drop(event)' ondragover = 'allowDrop(event)' class = 'drop-target1' id = 'drtarget1' >";
-dropTargetDiv2 = "<div ondrop = 'drop(event)' ondragover = 'allowDrop(event)' class = 'drop-target2' id = 'drtarget2'>";
 
-function createNumberedLabels()
+/*wrappers for numbered and empty elements */
+dropTargetDiv1 = "<li><div ondrop = 'drop(event)' ondragover = 'allowDrop(event)' class = 'drop-target1 list-group-item panel img-responsive' id = 'drtarget1' >";
+dropTargetDiv2 = "<li><div ondrop = 'drop(event)' ondragover = 'allowDrop(event)' class = 'drop-target2 panel img-responsive' id = 'drtarget2'>";
+
+
+function createNumberedElements()
 {
     var div = '';
     var image = '';
@@ -15,17 +18,17 @@ function createNumberedLabels()
     
     for (var i = 0; i < unsortedNumbers.length; i++) 
     { 
-        div += "<div draggable = 'true' ondragstart = 'drag(event)' ondragover = 'allowDrop(event)' id = 'drag" + i + "' class = 'drag'>";
-        image = "<img src = '../img/starr.png' class = 'img1' draggable = 'false'><br>";
+        div += "<div draggable = 'true' ondragstart = 'drag(event)' ondragover = 'allowDrop(event)' id = 'drag" + i + "' class = 'drag panel img-responsive'>";
+        image = "<img src = '../img/starr.png' class = 'img1 img-rounded img-responsive' draggable = 'false'><br>";
         label = "<label class = 'number-label'> "+ unsortedNumbers[i] + " </label></div>";
         div += image + label;                          
     } 
 
-    dropTargetDiv1 += div + "</div>";
+    dropTargetDiv1 += div + "</div></li>";
     list.append(dropTargetDiv1);
 }
 
-function createEmptyLabels()
+function createEmptyElements()
 {
     var div = '';
     var image = '';
@@ -34,13 +37,13 @@ function createEmptyLabels()
     
     for (var i = 0; i < unsortedNumbers.length; i++) 
     { 
-        div += "<div draggable = 'false'  id = 'drop" + i + "' class = 'drop'>";
-        image = "<img src = '../img/starr.png' class = 'img1' draggable = 'false'><br>";
+        div += "<div draggable = 'false'  id = 'drop" + i + "' class = 'drop panel panel-default img-responsive'>";
+        image = "<img src = '../img/starr.png' class = 'img1 img-rounded img-responsive' draggable = 'false'><br>";
         label = "<label class = 'number-label'> </label></div>";
         div += image + label;                    
     } 
 
-    dropTargetDiv2 += div + "</div>";   
+    dropTargetDiv2 += div + "</div></li>";   
     list.append(dropTargetDiv2); 
 }
 
@@ -54,14 +57,12 @@ function drag(ev)
 {
     ev.dataTransfer.setData("text", ev.target.id);
     var data = ev.dataTransfer.getData("text");
-    $('#'+ data).removeClass('correct'); 
-    $('#drop').removeClass('correct'); 
+
+    var i = (ev.target.id).substr((ev.target.id).length-1, (ev.target.id).length);
     $('#'+ data).removeClass('incorrect'); 
-    $('#drop').removeClass('incorrect');
+    $('#drop' + i).removeClass('incorrect');
     $("#" + data + " .img1").css({"opacity":"0.2"});
     $('#' + data + ' .number-label .letter-label').empty();
-
-
 }
 
 function drop(ev) 
@@ -69,13 +70,13 @@ function drop(ev)
     ev.preventDefault();    
     var data = ev.dataTransfer.getData("text");    
     ev.target.appendChild(document.getElementById(data));
+
     if((ev.target.id) == 'drtarget1') 
     {
         correctAnswers--;
         if(correctAnswers <= 0)
             correctAnswers = unsortedNumbers.length - incorrectAnswers.length;
-    }
-    
+    }    
 
     for(var i = 0; i < unsortedNumbers.length; i++)
     {
@@ -83,7 +84,7 @@ function drop(ev)
         {
             if((ev.target.id) == 'drop'+ i )
             {
-                $('#'+ data).css({"margin-top": "-55px", "margin-left": '-3px'});          
+                $('#'+ data).css({"margin-top": "-28.3%", "margin-left": '0%', "width": "100%", "height": "100%"});          
                 $(ev.target).addClass('swing');
                 getAnswer(data, i );
                 showMessage();
@@ -91,14 +92,15 @@ function drop(ev)
             }
             else
             {
-                $('#'+data).css({"margin-top": "36px", "margin-left": "10px"}); 
+                $('#'+data).css({"margin-top": "5%", "margin-left": "4%", "width": "15%", "height": "45%"}); 
             }
         }
+
         if ( $.browser.mozilla ) 
         {
             if((ev.target.id) == 'drop'+i)
             {                
-                $('#'+ data).css({"margin-top": "-59px", "margin-left": '-3px'});                
+                $('#'+ data).css({"margin-top": "-28.5%", "margin-left": '0%', "width": "100%", "height": "100%"});                
                 
                 $(ev.target).addClass('swing');
                 getAnswer(data, i );
@@ -107,14 +109,16 @@ function drop(ev)
             }
             else
             {
-                $('#'+ data).css({"margin-top": "36px", "margin-left": "10px"}); 
+                $('#'+ data).css({"margin-top": "5%", "margin-left": "4%", "width": "15%", "height": "45%"}); 
             }
-        }
+        }        
     }     
 }
 
 var correctAnswers = 0;
 var incorrectAnswers ="";
+
+/* checks user's answer and counts the right and wrong answers*/
 function getAnswer(data, target)
 {
     var number = -1;
@@ -124,17 +128,17 @@ function getAnswer(data, target)
         if (sortedNumbers[target] == number)
         {
             $('#'+ data).addClass('correct');
-            $('.drop#drop'+i).addClass('correct');
+            $('.drop#drop'+target).addClass('correct');
             $('#'+ data).attr("draggable", 'false');
             $("#" + data + " .img1").css({"opacity":"1"});
-            $('#'+ data + ' .number-label').append("<label class = 'letter-label'><br><br><center>" + letter[target] + "</center></label>");
+            $('#'+ data + ' .number-label').append("<label class = 'letter-label form-control'><center>" + letter[target] + "</center></label>");
             correctAnswers++;
             i = sortedNumbers.length;
         } 
         else 
         {
             $('#'+data).addClass('incorrect');
-            $('.drop#drop'+i).addClass('incorrect');
+            $('.drop#drop'+target).addClass('incorrect');
             incorrectAnswers += target;
             i = sortedNumbers.length;
 
@@ -160,12 +164,13 @@ function showMessage()
             $('.bubble').append("<center><label id = 'bubble-message'>Try again!</label></center>");
             $('.bubble').show();            
         }
+
     $('#application-form').click(function () 
-                {
-                    $('.bubble').hide();
-                    $('#happy').hide();
-                    $('#sad').hide();
-                });
+    {
+        $('.bubble').hide();
+        $('#happy').hide();
+        $('#sad').hide();
+    });
 }
 
 function init()
@@ -197,8 +202,8 @@ function init()
 
 $(document).ready(function() 
 { 
-    createNumberedLabels();
-    createEmptyLabels();
+    createNumberedElements();
+    createEmptyElements();
     init();
 });
 
