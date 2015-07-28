@@ -162,7 +162,7 @@ function showMessage()
             $('.bubble #bubble-message').empty();
             $('#sad').show();
             $('#happy').hide();
-            $('.bubble').append("<center><label id = 'bubble-message'>Try again!</label></center>");
+            $('.bubble').append("<center><label id = 'bubble-message'><a href = 'NumbersApplication.html'>Try again!</label></center>");
             $('.bubble').show();            
         }
 
